@@ -29,12 +29,39 @@ if ( !defined('ABSPATH') )
 	<p><label for="<?php echo $this->get_field_id('description'); ?>"><?php _e('Caption', 'image_widget'); ?>:</label>
 	<textarea rows="8" class="widefat" id="<?php echo $this->get_field_id('description'); ?>" name="<?php echo $this->get_field_name('description'); ?>"><?php echo format_to_edit($instance['description']); ?></textarea></p>
 
-	<p><label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Link', 'image_widget'); ?>:</label>
-	<input class="widefat" id="<?php echo $this->get_field_id('link'); ?>" name="<?php echo $this->get_field_name('link'); ?>" type="text" value="<?php echo esc_attr(strip_tags($instance['link'])); ?>" /><br />
+	<p id="holder_<?php echo $this->get_field_id('link'); ?>" style="<?php echo ($instance['link_page_id']) ? 'display:none;' : '';?>">
+        <a href="#" style="float:right;" onclick="imageWidget.toggleLinkType( 'link_page_id', '<?php echo $id_prefix; ?>' ); return false;"><?php _e('Link to Page','image_widget');?></a>
+        <label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Link to URL', 'image_widget'); ?>:</label>
+<input class="widefat" id="<?php echo $this->get_field_id('link'); ?>" name="<?php echo $this->get_field_name('link'); ?>" type="text" value="<?php echo esc_attr(strip_tags($instance['link'])); ?>" />
+    </p>
+    <p id="holder_<?php echo $this->get_field_id('link_page_id'); ?>" style="<?php echo (!$instance['link_page_id']) ? 'display:none;' : '';?>">
+        <a href="#" style="float:right;" onclick="imageWidget.toggleLinkType( 'link', '<?php echo $id_prefix; ?>' ); return false;"><?php _e('Link to URL','image_widget');?></a>
+        <label for="<?php echo $this->get_field_id('link_page_id'); ?>"><?php _e('Link to Page', 'image_widget'); ?>:</label>
+        <select class="widefat" name="<?php echo $this->get_field_name('link_page_id'); ?>" id="<?php echo $this->get_field_id('link_page_id'); ?>">
+            <option value=""><?php _e(' - select page - ','image_widget');?></option>
+            <?php $pages = get_pages(array(
+                'post_status' => 'publish'
+            ));
+            $selected = false;
+            foreach ( $pages as $pagg ) {
+                $option = '<option value="' . $pagg->ID  . '"';
+                if($pagg->ID == $instance['link_page_id']){
+                    $selected = $pagg;
+                    $option .= ' selected';
+                }
+                $option .= '>';
+                $option .= esc_attr($pagg->post_title);
+                $option .= '</option>';
+                echo $option;
+            } ?>
+        </select>
+    </p>
+    <p>
 	<select name="<?php echo $this->get_field_name('linktarget'); ?>" id="<?php echo $this->get_field_id('linktarget'); ?>">
 		<option value="_self"<?php selected( $instance['linktarget'], '_self' ); ?>><?php _e('Stay in Window', 'image_widget'); ?></option>
 		<option value="_blank"<?php selected( $instance['linktarget'], '_blank' ); ?>><?php _e('Open New Window', 'image_widget'); ?></option>
-	</select></p>
+	</select>
+    </p>
 
 
 	<?php

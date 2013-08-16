@@ -80,6 +80,24 @@ jQuery(document).ready(function($){
 			}
 		},
 
+		// Hide or display the different link types (link to page or link to url)
+		toggleLinkType : function( link_type, widget_id_string ) {
+			switch(link_type){
+                case 'link':
+                    // we are on "link to page" option and wanting to swap back to "link" option
+                    $( '#' + widget_id_string + "link_page_id option[value='']").attr('selected',true);
+                    $( '#holder_' + widget_id_string + "link_page_id").hide();
+                    $( '#holder_' + widget_id_string + "link").show();
+                    break;
+                case 'link_page_id':
+                    // we are on "link" option and wanting to swap back to "link to page" option
+                    $( '#' + widget_id_string + "link").val('');
+                    $( '#holder_' + widget_id_string + "link").hide();
+                    $( '#holder_' + widget_id_string + "link_page_id").show();
+                    break;
+            }
+		},
+
 		// Update the image height based on the image width.
 		changeImgWidth : function( widget_id, widget_id_string ) {
 			var aspectRatio = $("#" + widget_id_string + 'aspect_ratio').val();

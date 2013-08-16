@@ -90,6 +90,7 @@ class Tribe_Image_Widget extends WP_Widget {
 			$instance['title'] = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'] );
 			$instance['description'] = apply_filters( 'widget_text', $instance['description'], $args, $instance );
 			$instance['link'] = apply_filters( 'image_widget_image_link', esc_url( $instance['link'] ), $args, $instance );
+			$instance['link_page_id'] = apply_filters( 'image_widget_image_link_page_id', (int)$instance['link_page_id'], $args, $instance );
 			$instance['linktarget'] = apply_filters( 'image_widget_image_link_target', esc_attr( $instance['linktarget'] ), $args, $instance );
 			$instance['width'] = apply_filters( 'image_widget_image_width', abs( $instance['width'] ), $args, $instance );
 			$instance['height'] = apply_filters( 'image_widget_image_height', abs( $instance['height'] ), $args, $instance );
@@ -130,6 +131,7 @@ class Tribe_Image_Widget extends WP_Widget {
 			$instance['description'] = wp_filter_post_kses($new_instance['description']);
 		}
 		$instance['link'] = $new_instance['link'];
+		$instance['link_page_id'] = $new_instance['link_page_id'];
 		$instance['linktarget'] = $new_instance['linktarget'];
 		$instance['width'] = abs( $new_instance['width'] );
 		$instance['height'] =abs( $new_instance['height'] );
@@ -210,6 +212,7 @@ class Tribe_Image_Widget extends WP_Widget {
 			'title' => '',
 			'description' => '',
 			'link' => '',
+			'link_page_id' => '',
 			'linktarget' => '',
 			'width' => 0,
 			'height' => 0,
@@ -245,9 +248,9 @@ class Tribe_Image_Widget extends WP_Widget {
 
 		$output = '';
 
-		if ( $include_link && !empty( $instance['link'] ) ) {
+		if ( $include_link && (!empty( $instance['link'] ) || !empty( $instance['link_page_id'] )) ) {
 			$attr = array(
-				'href' => $instance['link'],
+				'href' => !empty($instance['link']) ? $instance['link'] : get_permalink($instance['link_page_id']),
 				'target' => $instance['linktarget'],
 				'class' => 	$this->widget_options['classname'].'-image-link',
 				'title' => ( !empty( $instance['alt'] ) ) ? $instance['alt'] : $instance['title'],
@@ -311,7 +314,7 @@ class Tribe_Image_Widget extends WP_Widget {
 			$output .= wp_get_attachment_image($instance['attachment_id'], $size, false, $attr);
 		}
 
-		if ( $include_link && !empty( $instance['link'] ) ) {
+		if ( $include_link && (!empty( $instance['link'] ) || !empty( $instance['link_page_id'] )) ) {
 			$output .= '</a>';
 		}
 
